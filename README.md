@@ -5,7 +5,7 @@
 如果使用时出现了无法解决的报错可以考虑使用[这个仓库手动启动](https://github.com/BiancoChiu/iOSEasyRun)。
 
 测试环境：
-- 操作系统：MacOS，Windows11
+- 操作系统：MacOS，Windows11，Linux
 - Python版本：3.13
 - iOS版本：18.3.1
 
@@ -13,7 +13,7 @@
 
 ### 前置条件
 
-1. 系统是 `Windows` 或 `MacOS`
+1. 系统是 `Windows` 或 `MacOS`（Linux请参考[此issue](https://github.com/BiancoChiu/iOSRealRun-cli-18/issues/4)）
 2. iPhone 或 iPad 系统版本大于等于 18（也许17的一些后期版本也可以用，未经测试）
 3. Windows 需要安装 iTunes
 4. 已安装 `Python3` 和 `pip3`
@@ -30,7 +30,7 @@
     如果提示没有需要的版本，请尝试不适用国内源  
 3. 修改配置和路线文件 （见 [这里](https://github.com/iOSRealRun/iOSRealRun-cli/blob/main/README.md#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95) 的 4、5、7 步）
 4. 将设备连接到电脑，解锁，如果请求信任的提示框，请点击信任
-5. 打开终端（cmd 或 PowerShell），执行以下命令获取DDI
+5. ~~打开终端（cmd 或 PowerShell），执行以下命令获取DDI~~（经测试此步骤可跳过）
     ```shell
     pymobiledevice3 mounter auto-mount
     ```
