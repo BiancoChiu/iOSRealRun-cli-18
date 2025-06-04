@@ -1,5 +1,10 @@
+import logging
+import sys
 import yaml
 import customtkinter
+import asyncio
+import main
+import threading
 # from PIL import Image, ImageTk
 # import PIL
 
@@ -12,10 +17,12 @@ customtkinter.set_appearance_mode("dark")
 
 
 class TextboxFrame(customtkinter.CTkFrame):
-    def __init__(self, master, title):
+    def __init__(self, master, title, route_file="route.txt"):
         super().__init__(master)
+        self.route_file = route_file
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
+
         self.title = title
         self.title = customtkinter.CTkLabel(
             self, text=self.title, fg_color="gray30", corner_radius=6
@@ -25,15 +32,45 @@ class TextboxFrame(customtkinter.CTkFrame):
         self.textbox = customtkinter.CTkTextbox(self)
         self.textbox.grid(row=1, column=0, padx=10, pady=(10, 10), sticky="nsew")
 
+        self.load_route_file()
+
+    def load_route_file(self):
+        try:
+            with open(self.route_file, "r") as f:
+                content = f.read()
+                self.textbox.insert("0.0", content)
+            print(f"Loaded {self.route_file} successfully.")
+        except FileNotFoundError:
+            print(f"Warning: {self.route_file} not found.")
+            self.textbox.insert("0.0", f"# {self.route_file} not found.")
+
     def get(self):
         return self.textbox.get("0.0", "end")
+
+
+# class LogFrame(customtkinter.CTkFrame):
+#     def __init__(self, master, title):
+#         super().__init__(master)
+#         self.grid_columnconfigure(0, weight=1)
+#         # self.grid_rowconfigure(1, weight=1)
+#         self.title = title
+#         self.title = customtkinter.CTkLabel(
+#             self, text=self.title, fg_color="gray30", corner_radius=6
+#         )
+#         self.title.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="ew")
+
+#         self.textbox = customtkinter.CTkTextbox(self)
+#         self.textbox.grid(row=1, column=0, padx=10, pady=(10, 10), sticky="nsew")
+#         self.textbox.configure(state="disabled")
+
 
 
 class LogFrame(customtkinter.CTkFrame):
     def __init__(self, master, title):
         super().__init__(master)
         self.grid_columnconfigure(0, weight=1)
-        # self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(1, weight=1)
+
         self.title = title
         self.title = customtkinter.CTkLabel(
             self, text=self.title, fg_color="gray30", corner_radius=6
@@ -44,12 +81,47 @@ class LogFrame(customtkinter.CTkFrame):
         self.textbox.grid(row=1, column=0, padx=10, pady=(10, 10), sticky="nsew")
         self.textbox.configure(state="disabled")
 
+        # 重定向 sys.stdout 和 sys.stderr 到这个 LogFrame
+        sys.stdout = self
+        sys.stderr = self
+
+    def write(self, message):
+        self.textbox.configure(state="normal")
+        self.textbox.insert("end", message)
+        self.textbox.see("end")  # 自动滚动到底部
+        self.textbox.configure(state="disabled")
+
+    def flush(self):
+        pass  # 有些库会调用 flush，留空即可
+
+    def redirect_logging(self):
+        # 把 logging 也重定向到这个 Textbox
+        class TextHandler(logging.Handler):
+            def __init__(self, text_widget):
+                super().__init__()
+                self.text_widget = text_widget
+
+            def emit(self, record):
+                msg = self.format(record) + "\n"
+                self.text_widget.configure(state="normal")
+                self.text_widget.insert("end", msg)
+                self.text_widget.see("end")
+                self.text_widget.configure(state="disabled")
+
+        handler = TextHandler(self.textbox)
+        handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+
+        logging.getLogger().addHandler(handler)
+
 
 class ConfigFrame(customtkinter.CTkFrame):
-    def __init__(self, master, title="Configuration"):
+    def __init__(self, master, title="Configuration", config_file="config.yaml"):
         super().__init__(master)
+        self.config_file = config_file
+
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=2, minsize=110)
+
         self.title = title
         self.title = customtkinter.CTkLabel(
             self, text=self.title, fg_color="gray30", corner_radius=6
@@ -58,36 +130,46 @@ class ConfigFrame(customtkinter.CTkFrame):
             row=0, column=0, columnspan=2, padx=10, pady=(10, 0), sticky="ew"
         )
 
-        self.v_label = customtkinter.CTkLabel(self, text="0", width=110)
+        self.v_label = customtkinter.CTkLabel(self, text="Velocity: 3.0 m/s", width=110)
         self.v_label.grid(row=1, column=0, padx=(10, 10), pady=(10, 0), sticky="ew")
-        self.v_label.configure(text="Velocity: 3.0 m/s")
         self.v_slider = customtkinter.CTkSlider(
             self, from_=0, to=6, number_of_steps=60, command=self.update_slider_value_v
         )
         self.v_slider.grid(row=1, column=1, padx=10, pady=(10, 0), sticky="ew")
-        self.v_slider.set(3.0)
 
         self.n_lap_label = customtkinter.CTkLabel(
             self, text="Number of laps: 8", width=120
         )
         self.n_lap_label.grid(row=2, column=0, padx=(10, 10), pady=(10, 0), sticky="ew")
-        self.n_lap_label.configure(text="Number of laps: 8")
         self.n_lap_slider = customtkinter.CTkSlider(
             self, from_=1, to=10, number_of_steps=9, command=self.update_slider_value_n
         )
         self.n_lap_slider.grid(row=2, column=1, padx=10, pady=(10, 0), sticky="ew")
-        self.n_lap_slider.set(8)
 
-        # image_pil = Image.open("assets/xianbei.png")
-        # image_pil = image_pil.resize((200, 200))
-        # self.velocity_image = ImageTk.PhotoImage(image_pil)
+        self.load_config()
 
-        # self.image_label = customtkinter.CTkLabel(
-        #     self, image=self.velocity_image, text=""
-        # )
-        # self.image_label.grid(
-        #     row=3, column=0, columnspan=2, pady=(0, 10)
-        # )
+    def load_config(self):
+        try:
+            with open(self.config_file, "r") as f:
+                config_data = yaml.safe_load(f)
+                print(f"Loaded {self.config_file}: {config_data}")
+
+                v_value = config_data.get("v", 3.0)
+                n_laps_value = config_data.get("n_laps", 8)
+
+                self.v_slider.set(v_value)
+                self.update_slider_value_v(v_value)
+
+                self.n_lap_slider.set(n_laps_value)
+                self.update_slider_value_n(n_laps_value)
+
+        except FileNotFoundError:
+            print(f"Warning: {self.config_file} not found. Using defaults.")
+            self.v_slider.set(3.0)
+            self.update_slider_value_v(3.0)
+
+            self.n_lap_slider.set(8)
+            self.update_slider_value_n(8)
 
     def update_slider_value_v(self, value):
         self.v_label.configure(text=f"Velocity: {value:.1f} m/s")
@@ -101,16 +183,25 @@ class ConfigFrame(customtkinter.CTkFrame):
     def get_n_lap(self):
         return self.n_lap_slider.get()
 
+        # image_pil = Image.open("assets/xianbei.png")
+        # image_pil = image_pil.resize((200, 200))
+        # self.velocity_image = ImageTk.PhotoImage(image_pil)
+
+        # self.image_label = customtkinter.CTkLabel(
+        #     self, image=self.velocity_image, text=""
+        # )
+        # self.image_label.grid(
+        #     row=3, column=0, columnspan=2, pady=(0, 10)
+        # )
+
 
 class ActionsFrame(customtkinter.CTkFrame):
     def __init__(self, master, title, config_frame, textbox_frame):
         super().__init__(master)
         self.grid_columnconfigure(0, weight=1)
-        # self.grid_rowconfigure([0, 1, 2, 3], weight=1)
-        # self.grid_columnconfigure(1, weight=2, minsize=110)
+
         self.config_frame = config_frame
         self.textbox_frame = textbox_frame
-
         self.title = title
         self.title = customtkinter.CTkLabel(
             self, text=self.title, fg_color="gray30", corner_radius=6
@@ -127,7 +218,9 @@ class ActionsFrame(customtkinter.CTkFrame):
         )
 
         self.change_location_button = customtkinter.CTkButton(
-            self, text="Change Location", command=self.change_location_callback
+            self,
+            text="Change Location (not implemented yet)",
+            command=self.change_location_callback,
         )
         self.change_location_button.grid(
             row=2, column=0, padx=10, pady=(10, 0), sticky="ew", columnspan=2
@@ -147,7 +240,18 @@ class ActionsFrame(customtkinter.CTkFrame):
             row=4, column=0, padx=10, pady=(10, 0), sticky="ew", columnspan=2
         )
 
+
     def run_callback(self):
+        # print("Run button clicked. Starting main()...")
+
+        # def run_asyncio_main():
+        #     loop = asyncio.new_event_loop()
+        #     asyncio.set_event_loop(loop)
+        #     loop.run_until_complete(run_main.main())
+
+        # threading.Thread(target=run_asyncio_main, daemon=True).start()
+
+        # print("main() coroutine started.")
         pass
 
     def quit_callback(self):
@@ -157,16 +261,14 @@ class ActionsFrame(customtkinter.CTkFrame):
         pass
 
     def save_callback(self):
-        pass
-    def save_callback(self):
         v_value = self.config_frame.get_v()
         n_laps_value = int(self.config_frame.get_n_lap())
         route_path = "route.txt"
 
         config_data = {
-            'v': round(v_value, 1),
-            'n_laps': int(n_laps_value),
-            'routeConfig': route_path
+            "v": round(v_value, 1),
+            "n_laps": int(n_laps_value),
+            "routeConfig": route_path,
         }
 
         coords = self.textbox_frame.get().strip()
@@ -181,6 +283,7 @@ class ActionsFrame(customtkinter.CTkFrame):
 
         print("Configuration saved:", config_data)
 
+
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
@@ -189,7 +292,7 @@ class App(customtkinter.CTk):
         self.geometry("800x600")
         self.grid_columnconfigure(0, weight=1, minsize=400)
         self.grid_columnconfigure(1, weight=1, minsize=400)
-        self.grid_rowconfigure(0, weight=1, minsize=140)
+        self.grid_rowconfigure(0, weight=1, minsize=130)
         # self.grid_rowconfigure(1, weight=4)
 
         # self.textbox_frame = TextboxFrame(self, "Coordinates")
@@ -215,20 +318,24 @@ class App(customtkinter.CTk):
             row=0, column=0, padx=(10, 5), pady=(10, 10), sticky="nsew", rowspan=3
         )
 
-
-
         self.config_frame = ConfigFrame(self, "Configuration")
         self.config_frame.grid(
             row=0, column=1, padx=(5, 10), pady=(10, 5), sticky="nsew"
         )
 
-        self.actions_frame = ActionsFrame(self, "Actions", config_frame=self.config_frame, textbox_frame=self.textbox_frame)
+        self.actions_frame = ActionsFrame(
+            self,
+            "Actions",
+            config_frame=self.config_frame,
+            textbox_frame=self.textbox_frame,
+        )
         self.actions_frame.grid(
             row=1, column=1, padx=(5, 10), pady=(5, 5), sticky="nsew"
         )
 
         self.log_frame = LogFrame(self, "Log")
         self.log_frame.grid(row=2, column=1, padx=(5, 10), pady=(5, 10), sticky="nsew")
+        self.log_frame.redirect_logging()
 
     #     self.button = customtkinter.CTkButton(
     #         self, text="my button", command=self.button_callback

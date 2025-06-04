@@ -13,21 +13,29 @@ import run
 import config
 
 
-
 debug = os.environ.get("DEBUG", False)
 
 coloredlogs.install(level=logging.INFO)
-logging.getLogger('wintun').setLevel(logging.DEBUG if debug else logging.WARNING)
-logging.getLogger('quic').setLevel(logging.DEBUG if debug else logging.WARNING)
-logging.getLogger('asyncio').setLevel(logging.DEBUG if debug else logging.WARNING)
-logging.getLogger('zeroconf').setLevel(logging.DEBUG if debug else logging.WARNING)
-logging.getLogger('parso.cache').setLevel(logging.DEBUG if debug else logging.WARNING)
-logging.getLogger('parso.cache.pickle').setLevel(logging.DEBUG if debug else logging.WARNING)
-logging.getLogger('parso.python.diff').setLevel(logging.DEBUG if debug else logging.WARNING)
-logging.getLogger('humanfriendly.prompts').setLevel(logging.DEBUG if debug else logging.WARNING)
-logging.getLogger('blib2to3.pgen2.driver').setLevel(logging.DEBUG if debug else logging.WARNING)
-logging.getLogger('urllib3.connectionpool').setLevel(logging.DEBUG if debug else logging.WARNING)
-
+logging.getLogger("wintun").setLevel(logging.DEBUG if debug else logging.WARNING)
+logging.getLogger("quic").setLevel(logging.DEBUG if debug else logging.WARNING)
+logging.getLogger("asyncio").setLevel(logging.DEBUG if debug else logging.WARNING)
+logging.getLogger("zeroconf").setLevel(logging.DEBUG if debug else logging.WARNING)
+logging.getLogger("parso.cache").setLevel(logging.DEBUG if debug else logging.WARNING)
+logging.getLogger("parso.cache.pickle").setLevel(
+    logging.DEBUG if debug else logging.WARNING
+)
+logging.getLogger("parso.python.diff").setLevel(
+    logging.DEBUG if debug else logging.WARNING
+)
+logging.getLogger("humanfriendly.prompts").setLevel(
+    logging.DEBUG if debug else logging.WARNING
+)
+logging.getLogger("blib2to3.pgen2.driver").setLevel(
+    logging.DEBUG if debug else logging.WARNING
+)
+logging.getLogger("urllib3.connectionpool").setLevel(
+    logging.DEBUG if debug else logging.WARNING
+)
 
 
 async def main():
@@ -42,9 +50,19 @@ async def main():
     logger.info("init done")
 
     logger.info("trying to start tunnel")
-    original_sigint_handler = signal.signal(signal.SIGINT, signal.SIG_IGN)
-    process, address, port = tunnel.tunnel()
-    signal.signal(signal.SIGINT, original_sigint_handler)
+    # original_sigint_handler = signal.signal(signal.SIGINT, signal.SIG_IGN)
+    # process, address, port = tunnel.tunnel()
+    # signal.signal(signal.SIGINT, original_sigint_handler)
+    import threading
+
+    if threading.current_thread() is threading.main_thread():
+        original_sigint_handler = signal.signal(signal.SIGINT, signal.SIG_IGN)
+        process, address, port = tunnel.tunnel()
+        signal.signal(signal.SIGINT, original_sigint_handler)
+    else:
+        # 子线程里不能改 signal，直接跳过
+        process, address, port = tunnel.tunnel()
+
     try:
         logger.debug(f"tunnel address: {address}, port: {port}")
 
@@ -71,8 +89,7 @@ async def main():
         process.terminate()
         logger.info("tunnel process terminated")
         print("Bye")
-    
 
-    
+
 if __name__ == "__main__":
     asyncio.run(main())

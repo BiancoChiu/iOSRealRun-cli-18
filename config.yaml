@@ -1,4 +1,3 @@
-v: 3.3
-routeConfig: "HNroute.txt"
-libimobiledeviceDir: "libimobiledevice"
-imageDir: "DeveloperDiskImage"
+n_laps: 8
+routeConfig: route.txt
+v: 3.0
