@@ -3,7 +3,7 @@ import logging
 import coloredlogs
 import os
 import asyncio
-
+import threading
 
 from init import init
 from init import tunnel
@@ -37,6 +37,8 @@ logging.getLogger("urllib3.connectionpool").setLevel(
     logging.DEBUG if debug else logging.WARNING
 )
 
+stop_event = threading.Event()
+
 
 async def main():
     logger = logging.getLogger(__name__)
@@ -50,17 +52,12 @@ async def main():
     logger.info("init done")
 
     logger.info("trying to start tunnel")
-    # original_sigint_handler = signal.signal(signal.SIGINT, signal.SIG_IGN)
-    # process, address, port = tunnel.tunnel()
-    # signal.signal(signal.SIGINT, original_sigint_handler)
-    import threading
 
     if threading.current_thread() is threading.main_thread():
         original_sigint_handler = signal.signal(signal.SIGINT, signal.SIG_IGN)
         process, address, port = tunnel.tunnel()
         signal.signal(signal.SIGINT, original_sigint_handler)
     else:
-        # 子线程里不能改 signal，直接跳过
         process, address, port = tunnel.tunnel()
 
     try:
@@ -73,7 +70,7 @@ async def main():
             print(f"已开始模拟跑步，速度大约为 {config.config.v} m/s")
             print("会无限循环，按 Ctrl+C 退出")
             print("请勿直接关闭窗口，否则无法还原正常定位")
-            await run.run(address, port, loc, config.config.v)
+            await run.run(address, port, loc, config.config.v, stop_event)
         except KeyboardInterrupt:
             logger.debug("get KeyboardInterrupt (inner)")
             logger.debug(f"Is process alive? {process.is_alive()}")

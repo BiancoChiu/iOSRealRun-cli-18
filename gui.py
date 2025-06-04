@@ -5,6 +5,7 @@ import customtkinter
 import asyncio
 import main
 import threading
+
 # from PIL import Image, ImageTk
 # import PIL
 
@@ -48,23 +49,6 @@ class TextboxFrame(customtkinter.CTkFrame):
         return self.textbox.get("0.0", "end")
 
 
-# class LogFrame(customtkinter.CTkFrame):
-#     def __init__(self, master, title):
-#         super().__init__(master)
-#         self.grid_columnconfigure(0, weight=1)
-#         # self.grid_rowconfigure(1, weight=1)
-#         self.title = title
-#         self.title = customtkinter.CTkLabel(
-#             self, text=self.title, fg_color="gray30", corner_radius=6
-#         )
-#         self.title.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="ew")
-
-#         self.textbox = customtkinter.CTkTextbox(self)
-#         self.textbox.grid(row=1, column=0, padx=10, pady=(10, 10), sticky="nsew")
-#         self.textbox.configure(state="disabled")
-
-
-
 class LogFrame(customtkinter.CTkFrame):
     def __init__(self, master, title):
         super().__init__(master)
@@ -81,21 +65,19 @@ class LogFrame(customtkinter.CTkFrame):
         self.textbox.grid(row=1, column=0, padx=10, pady=(10, 10), sticky="nsew")
         self.textbox.configure(state="disabled")
 
-        # 重定向 sys.stdout 和 sys.stderr 到这个 LogFrame
         sys.stdout = self
         sys.stderr = self
 
     def write(self, message):
         self.textbox.configure(state="normal")
         self.textbox.insert("end", message)
-        self.textbox.see("end")  # 自动滚动到底部
+        self.textbox.see("end")
         self.textbox.configure(state="disabled")
 
     def flush(self):
-        pass  # 有些库会调用 flush，留空即可
+        pass
 
     def redirect_logging(self):
-        # 把 logging 也重定向到这个 Textbox
         class TextHandler(logging.Handler):
             def __init__(self, text_widget):
                 super().__init__()
@@ -109,7 +91,9 @@ class LogFrame(customtkinter.CTkFrame):
                 self.text_widget.configure(state="disabled")
 
         handler = TextHandler(self.textbox)
-        handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+        handler.setFormatter(
+            logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+        )
 
         logging.getLogger().addHandler(handler)
 
@@ -232,27 +216,41 @@ class ActionsFrame(customtkinter.CTkFrame):
         self.run_button.grid(
             row=3, column=0, padx=10, pady=(10, 0), sticky="nsew", columnspan=2
         )
-
+        self.stop_button = customtkinter.CTkButton(
+            self, text="Stop", command=self.stop_callback
+        )
+        self.stop_button.grid(
+            row=4, column=0, padx=10, pady=(10, 0), sticky="nsew", columnspan=2
+        )
         self.quit_button = customtkinter.CTkButton(
             self, text="Quit", command=self.quit_callback
         )
         self.quit_button.grid(
-            row=4, column=0, padx=10, pady=(10, 0), sticky="ew", columnspan=2
+            row=5, column=0, padx=10, pady=(10, 0), sticky="ew", columnspan=2
         )
 
 
     def run_callback(self):
-        # print("Run button clicked. Starting main()...")
+        print("Run button clicked. Starting main()...")
 
-        # def run_asyncio_main():
-        #     loop = asyncio.new_event_loop()
-        #     asyncio.set_event_loop(loop)
-        #     loop.run_until_complete(run_main.main())
+        def run_async_main():
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(main.main())
 
-        # threading.Thread(target=run_asyncio_main, daemon=True).start()
+        threading.Thread(target=run_async_main, daemon=True).start()
 
-        # print("main() coroutine started.")
-        pass
+        print("main() coroutine started.")
+
+    def stop_callback(self):
+        print("Stop button clicked. Stopping main thread...")
+
+        main.stop_event.set()
+
+        if self.run_thread is not None:
+            self.run_thread.join(timeout=5)
+            print("Main thread stopped.")
+
 
     def quit_callback(self):
         self.master.destroy()
@@ -293,25 +291,6 @@ class App(customtkinter.CTk):
         self.grid_columnconfigure(0, weight=1, minsize=400)
         self.grid_columnconfigure(1, weight=1, minsize=400)
         self.grid_rowconfigure(0, weight=1, minsize=130)
-        # self.grid_rowconfigure(1, weight=4)
-
-        # self.textbox_frame = TextboxFrame(self, "Coordinates")
-        # self.textbox_frame.grid(
-        #     row=0, column=0, padx=(10, 5), pady=(10, 0), sticky="nsew", rowspan=3
-        # )
-
-        # self.log_frame = LogFrame(self, "Log")
-        # self.log_frame.grid(row=1, column=0, padx=(10, 5), pady=(10, 10), sticky="nsew")
-
-        # self.config_frame = ConfigFrame(self, "Configuration")
-        # self.config_frame.grid(
-        #     row=0, column=1, padx=(5, 10), pady=(10, 0), sticky="nsew"
-        # )
-
-        # self.actions_frame = ActionsFrame(self, "Actions")
-        # self.actions_frame.grid(
-        #     row=1, column=1, padx=(5, 10), pady=(10, 10), sticky="nsew"
-        # )
 
         self.textbox_frame = TextboxFrame(self, "Coordinates")
         self.textbox_frame.grid(
@@ -337,16 +316,6 @@ class App(customtkinter.CTk):
         self.log_frame.grid(row=2, column=1, padx=(5, 10), pady=(5, 10), sticky="nsew")
         self.log_frame.redirect_logging()
 
-    #     self.button = customtkinter.CTkButton(
-    #         self, text="my button", command=self.button_callback
-    #     )
-    #     self.button.grid(row=3, column=0, padx=10, pady=10, sticky="ew", columnspan=2)
-
-    # def button_callback(self):
-    #     print(self.textbox_frame.get())
-    #     print(f"Velocity: {self.config_frame.get_v()} m/s")
-    #     print(f"Number of laps: {self.config_frame.get_n_lap()}")
-
-
-app = App()
-app.mainloop()
+if __name__ == "__main__":
+    app = App()
+    app.mainloop()

@@ -137,19 +137,29 @@ def fixLockT(loc: list, v, dt):
             t += dt
     return fixedLoc
 
-def run1(dvt, loc: list, v, dt=0.2):
+def run1(dvt, loc: list, v, stop_event, dt=0.2):
     fixedLoc = fixLockT(loc, v, dt)
     nList = (5, 6, 7, 8, 9)
     n = nList[random.randint(0, len(nList)-1)]
     fixedLoc = randLoc(fixedLoc, n=n)  # a path will be divided into n parts for random route
     clock = time.time()
+    
     for i in fixedLoc:
+        if stop_event.is_set():
+            print("run1() 检测到停止信号，退出")
+            return
+
         LocationSimulation(dvt).set(*bd09Towgs84(i).values())
-        while time.time()-clock < dt:
-            pass
+
+        while time.time() - clock < dt:
+            if stop_event.is_set():
+                print("run1() 等待中检测到停止信号，退出")
+                return
+            time.sleep(0.01)
+
         clock = time.time()
 
-async def run(address, port, loc: list, v, d=15):
+async def run(address, port, loc: list, v, stop_event, d=15):
     random.seed(time.time())
     rsd = RemoteServiceDiscoveryService((address, port))
     await asyncio.sleep(2)
@@ -157,7 +167,8 @@ async def run(address, port, loc: list, v, d=15):
     dvt = DvtSecureSocketProxyService(rsd)
     dvt.perform_handshake()
 
-    while True:
+    # while True:
+    while not stop_event.is_set():
         vRand = 1000/(1000/v-(2*random.random()-1)*d)
-        run1(dvt, loc, vRand)
+        run1(dvt, loc, vRand, stop_event)
         print("跑完一圈了")
