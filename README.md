@@ -1,4 +1,9 @@
 # iOSRealRun-cli-18
+## 更新计划
+正在写一个GUI，想要打包好方便直接运行 (dev branch)
+
+<img width="800" alt="image" src="https://github.com/user-attachments/assets/89554033-0357-4873-9a21-a647a3ee581a" />
+---
 
 本项目基于 [iOSRealRun-cli-17](https://github.com/iOSRealRun/iOSRealRun-cli-17) 修改而来，并更新了依赖的 [pymobiledevice3](https://github.com/doronz88/pymobiledevice3)。
 
