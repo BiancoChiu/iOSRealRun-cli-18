@@ -1,0 +1,62 @@
+Metadata-Version: 2.4
+Name: developer_disk_image
+Version: 0.2.0
+Summary: Download DeveloperDiskImage ans Personalized images from GitHub
+Author-email: doronz88 <doron88@gmail.com>
+Maintainer-email: doronz88 <doron88@gmail.com>
+Project-URL: Homepage, https://github.com/doronz88/DeveloperDiskImage
+Project-URL: Bug Reports, https://github.com/doronz88/DeveloperDiskImage/issues
+Keywords: ios,DeveloperDiskImage
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3 :: Only
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: requests
+Provides-Extra: test
+Requires-Dist: pytest; extra == "test"
+
+[![Pypi version](https://img.shields.io/pypi/v/developer_disk_image.svg)](https://pypi.org/project/developer_disk_image/ "PyPi package")
+
+# Overview
+
+Store both types of Apple's DeveloperDiskImage files:
+
+- `DeveloperDiskImage.dmg` & `DeveloperDiskImage.dmg.signature`
+    - Used for each iOS version < 17.0
+- The new Personalized images, but splitted to:
+    - APFS
+    - `BuildManifest.plist`
+    - Trustcache
+
+The split of the new format is requires for OS* other than macOS that will have trouble extracting the original APFS
+image inside: `~/Library/Developer/DeveloperDiskImages`.
+
+# Python package
+
+Additionally, this repo provides a python API for accessing this repository.
+You can install it as follows:
+
+```shell
+python3 -m pip install -U developer_disk_image
+```
+
+## Example usage
+
+```python
+from developer_disk_image.repo import DeveloperDiskImageRepository
+
+repo = DeveloperDiskImageRepository.create()
+
+# will get both the APFS and the signature file
+developer_disk_image = repo.get_developer_disk_image('16.4')
+
+# will get all necessary files for mount
+personalized_disk_image = repo.get_personalized_disk_image()
+```

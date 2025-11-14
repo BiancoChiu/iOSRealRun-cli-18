@@ -40,6 +40,9 @@ async def main():
 
     init.init()
     logger.info("init done")
+    # ===== 新增：交互选路线 =====
+    route.choose_route_file()          # 把用户选择写进 config.config.routeConfig
+    # ===========================
 
     logger.info("trying to start tunnel")
     original_sigint_handler = signal.signal(signal.SIGINT, signal.SIG_IGN)

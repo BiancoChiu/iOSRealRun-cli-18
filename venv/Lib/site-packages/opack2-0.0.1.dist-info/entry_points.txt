@@ -1,0 +1,2 @@
+[console_scripts]
+opack = opack.__main__:cli

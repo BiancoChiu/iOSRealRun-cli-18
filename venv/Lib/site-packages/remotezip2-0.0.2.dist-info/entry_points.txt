@@ -1,0 +1,2 @@
+[console_scripts]
+python-remotezip2 = remotezip2:main

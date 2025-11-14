@@ -1,0 +1,105 @@
+Metadata-Version: 2.4
+Name: pyimg4
+Version: 0.8.8
+Summary: A Python library/CLI tool for parsing Apple's Image4 format.
+Project-URL: Repository, https://github.com/m1stadev/PyIMG4
+Project-URL: Bug Tracker, https://github.com/m1stadev/PyIMG4/issues
+Author-email: m1stadev <adamhamdi31@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2025 m1sta
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Keywords: iboot,image4,img4,ios,jailbreak
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Utilities
+Requires-Python: >=3.9
+Requires-Dist: apple-compress>=0.2.3; sys_platform == 'darwin'
+Requires-Dist: asn1<3.0.0
+Requires-Dist: asn1>=2.7.0
+Requires-Dist: click>=8.1.7
+Requires-Dist: lzfse>=0.4.2; sys_platform != 'darwin'
+Requires-Dist: pycryptodome>=3.18.0
+Requires-Dist: pylzss==0.3.4
+Description-Content-Type: text/markdown
+
+<p align="center">
+<img src=".github/assets/icon.png" alt="https://github.com/m1stadev/PyIMG4" width=256px> 
+</p>
+
+<h1 align="center">
+PyIMG4
+</h1>
+<p align="center">
+  <a href="https://github.com/m1stadev/PyIMG4/blob/master/LICENSE">
+    <image src="https://img.shields.io/github/license/m1stadev/PyIMG4">
+  </a>
+  <a href="https://github.com/m1stadev/PyIMG4/stargazers">
+    <image src="https://img.shields.io/github/stars/m1stadev/PyIMG4">
+  </a>
+  <a href="https://github.com/m1stadev/PyIMG4">
+    <image src="https://tokei.rs/b1/github/m1stadev/PyIMG4?category=code&lang=python&style=flat">
+  </a>
+  <a href="https://github.com/m1stadev/PyIMG4">
+    <image src="https://img.shields.io/github/actions/workflow/status/m1stadev/PyIMG4/.github/workflows/python-tests.yml">
+  </a>
+    <br>
+</p>
+
+<p align="center">
+A Python library/CLI tool for parsing Apple's <a href="https://www.theiphonewiki.com/wiki/IMG4_File_Format">Image4 format</a>.
+</p>
+
+## Usage
+```
+Usage: pyimg4 [OPTIONS] COMMAND [ARGS]...
+
+  A Python CLI tool for parsing Apple's Image4 format.
+
+Options:
+  --version  Show the version and exit.
+  -h, --help     Show this message and exit.
+
+Commands:
+  im4m  Image4 manifest commands.
+  im4p  Image4 payload commands.
+  im4r  Image4 restore info commands.
+  img4  Image4 commands.
+```
+
+## Requirements
+- Python 3.9 or later
+
+## Installation
+- Install from <a href="https://pypi.org/p/pyimg4">PyPI</a>:
+    - ```python3 -m pip install pyimg4```
+- Local installation:
+    - `pip install --force-reinstall .`
+
+## Notes
+- For compression, LZFSE compression utilizes the <a href="https://pypi.org/p/apple-compress">apple-compress</a> library on *OS, and the <a href="https://pypi.org/p/lzfse">lzfse</a> library on all other OSes (due to libcompression not being available outside of Apple platforms).
+  - If for some reason you'd like to force the lzfse library to be used on *OS (not recommended), you can set the environment variable `PYIMG4_FORCE_LZFSE`.
+
+## Support
+For any questions/issues you have, <a href="https://github.com/m1stadev/PyIMG4/issues">open an issue<a/>.

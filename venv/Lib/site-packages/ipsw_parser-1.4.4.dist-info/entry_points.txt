@@ -1,0 +1,2 @@
+[console_scripts]
+ipsw-parser = ipsw_parser.__main__:cli

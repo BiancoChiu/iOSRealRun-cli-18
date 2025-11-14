@@ -1,0 +1,68 @@
+Metadata-Version: 2.1
+Name: fastapi-cloud-cli
+Version: 0.3.1
+Summary: Deploy and manage FastAPI Cloud apps from the command line 🚀
+Author-Email: Patrick Arminio <patrick@fastapilabs.com>
+License: MIT
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development
+Classifier: Typing :: Typed
+Classifier: Development Status :: 4 - Beta
+Classifier: Framework :: FastAPI
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: License :: OSI Approved :: MIT License
+Project-URL: Homepage, https://github.com/fastapilabs/fastapi-cloud-cli
+Project-URL: Documentation, https://fastapi.tiangolo.com/fastapi-cloud-cli/
+Project-URL: Repository, https://github.com/fastapilabs/fastapi-cloud-cli
+Project-URL: Issues, https://github.com/fastapilabs/fastapi-cloud-cli/issues
+Project-URL: Changelog, https://github.com/fastapilabs/fastapi-cloud-cli/blob/main/release-notes.md
+Requires-Python: >=3.8
+Requires-Dist: typer>=0.12.3
+Requires-Dist: uvicorn[standard]>=0.15.0
+Requires-Dist: rignore>=0.5.1
+Requires-Dist: httpx>=0.27.0
+Requires-Dist: rich-toolkit>=0.14.5
+Requires-Dist: pydantic[email]>=1.6.1
+Requires-Dist: sentry-sdk>=2.20.0
+Provides-Extra: standard
+Requires-Dist: uvicorn[standard]>=0.15.0; extra == "standard"
+Description-Content-Type: text/markdown
+
+# FastAPI Cloud CLI
+
+<a href="https://github.com/fastapilabs/fastapi-cloud-cli/actions/workflows/test.yml" target="_blank">
+    <img src="https://github.com/fastapilabs/fastapi-cloud-cli/actions/workflows/test.yml/badge.svg" alt="Test">
+</a>
+<a href="https://github.com/fastapilabs/fastapi-cloud-cli/actions/workflows/publish.yml" target="_blank">
+    <img src="https://github.com/fastapilabs/fastapi-cloud-cli/actions/workflows/publish.yml/badge.svg" alt="Publish">
+</a>
+<a href="https://coverage-badge.samuelcolvin.workers.dev/redirect/fastapilabs/fastapi-cloud-cli" target="_blank">
+    <img src="https://coverage-badge.samuelcolvin.workers.dev/fastapilabs/fastapi-cloud-cli.svg" alt="Coverage">
+<a href="https://pypi.org/project/fastapi-cloud-cli" target="_blank">
+    <img src="https://img.shields.io/pypi/v/fastapi-cloud-cli?color=%2334D058&label=pypi%20package" alt="Package version">
+</a>
+
+---
+
+**Source Code**: <a href="https://github.com/fastapilabs/fastapi-cloud-cli" target="_blank">https://github.com/fastapilabs/fastapi-cloud-cli</a>
+
+---
+
+## License
+
+This project is licensed under the terms of the MIT license.

@@ -1,0 +1,2 @@
+[console_scripts]
+pygnuutils = pygnuutils.__main__:main

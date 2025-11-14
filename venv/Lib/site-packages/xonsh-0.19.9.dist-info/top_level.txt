@@ -1,0 +1,3 @@
+xompletions
+xonsh
+xontrib

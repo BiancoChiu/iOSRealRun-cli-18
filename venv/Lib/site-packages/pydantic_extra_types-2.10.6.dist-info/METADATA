@@ -1,0 +1,87 @@
+Metadata-Version: 2.4
+Name: pydantic-extra-types
+Version: 2.10.6
+Summary: Extra Pydantic types.
+Project-URL: Homepage, https://github.com/pydantic/pydantic-extra-types
+Project-URL: Source, https://github.com/pydantic/pydantic-extra-types
+Project-URL: Changelog, https://github.com/pydantic/pydantic-extra-types/releases
+Project-URL: Documentation, https://docs.pydantic.dev/latest/
+Author-email: Samuel Colvin <s@muelcolvin.com>, Yasser Tahiri <hello@yezz.me>
+License-Expression: MIT
+License-File: LICENSE
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Environment :: MacOS X
+Classifier: Framework :: Pydantic
+Classifier: Framework :: Pydantic :: 2
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Operating System :: Unix
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Internet
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Requires-Dist: pydantic>=2.5.2
+Requires-Dist: typing-extensions
+Provides-Extra: all
+Requires-Dist: cron-converter>=1.2.2; extra == 'all'
+Requires-Dist: pendulum<4.0.0,>=3.0.0; extra == 'all'
+Requires-Dist: phonenumbers<10,>=8; extra == 'all'
+Requires-Dist: pycountry>=23; extra == 'all'
+Requires-Dist: pymongo<5.0.0,>=4.0.0; extra == 'all'
+Requires-Dist: python-ulid<2,>=1; (python_version < '3.9') and extra == 'all'
+Requires-Dist: python-ulid<4,>=1; (python_version >= '3.9') and extra == 'all'
+Requires-Dist: pytz>=2024.1; extra == 'all'
+Requires-Dist: semver>=3.0.2; extra == 'all'
+Requires-Dist: semver~=3.0.2; extra == 'all'
+Requires-Dist: tzdata>=2024.1; extra == 'all'
+Provides-Extra: cron
+Requires-Dist: cron-converter>=1.2.2; extra == 'cron'
+Provides-Extra: pendulum
+Requires-Dist: pendulum<4.0.0,>=3.0.0; extra == 'pendulum'
+Provides-Extra: phonenumbers
+Requires-Dist: phonenumbers<10,>=8; extra == 'phonenumbers'
+Provides-Extra: pycountry
+Requires-Dist: pycountry>=23; extra == 'pycountry'
+Provides-Extra: python-ulid
+Requires-Dist: python-ulid<2,>=1; (python_version < '3.9') and extra == 'python-ulid'
+Requires-Dist: python-ulid<4,>=1; (python_version >= '3.9') and extra == 'python-ulid'
+Provides-Extra: semver
+Requires-Dist: semver>=3.0.2; extra == 'semver'
+Description-Content-Type: text/markdown
+
+# Pydantic Extra Types
+
+[![CI](https://github.com/pydantic/pydantic-extra-types/workflows/CI/badge.svg?event=push)](https://github.com/pydantic/pydantic-extra-types/actions?query=event%3Apush+branch%3Amain+workflow%3ACI)
+[![Coverage](https://codecov.io/gh/pydantic/pydantic-extra-types/branch/main/graph/badge.svg)](https://codecov.io/gh/pydantic/pydantic-extra-types)
+[![pypi](https://img.shields.io/pypi/v/pydantic-extra-types.svg)](https://pypi.python.org/pypi/pydantic-extra-types)
+[![license](https://img.shields.io/github/license/pydantic/pydantic-extra-types.svg)](https://github.com/pydantic/pydantic-extra-types/blob/main/LICENSE)
+
+A place for pydantic types that probably shouldn't exist in the main pydantic lib.
+
+See [pydantic/pydantic#5012](https://github.com/pydantic/pydantic/issues/5012) for more info.
+
+## Installation
+
+Install this library with the desired extras dependencies as listed in [project.optional-dependencies](./pyproject.toml).
+
+For example, if pendulum support was desired:
+
+```shell
+# via uv
+$ uv add "pydantic-extra-types[pendulum]"
+
+# via pip
+$ pip install -U "pydantic-extra-types[pendulum]"
+```
