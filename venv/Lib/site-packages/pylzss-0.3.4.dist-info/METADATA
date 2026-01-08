@@ -1,0 +1,23 @@
+Metadata-Version: 2.1
+Name: pylzss
+Version: 0.3.4
+Summary: LZSS compression algorithm
+Home-page: https://github.com/m1stadev/pylzss
+Author: Guillaume Tucker
+Author-email: guillaume.tucker@plasticlogic.com
+Maintainer: m1sta
+Maintainer-email: adamhamdi31@gmail.com
+License: GNU LGPL v3
+Platform: Windows
+Platform: Linux
+Platform: macOS
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 2
+Classifier: Topic :: System :: Archiving :: Compression
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)
+License-File: COPYING
+License-File: COPYING.LESSER
+
+A package for decoding / encoding LZSS-compressed data.

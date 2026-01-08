@@ -1,0 +1,29 @@
+Metadata-Version: 2.1
+Name: remotezip2
+Version: 0.0.2
+Summary: Fork of python-remotezip
+Author-email: doronz88 <doron88@gmail.com>
+Maintainer-email: doronz88 <doron88@gmail.com>
+License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+Project-URL: Homepage, https://github.com/doronz88/python-remotezip2
+Project-URL: Bug Reports, https://github.com/doronz88/python-remotezip2/issues
+Keywords: zip,remotezip
+Classifier: Intended Audience :: Developers
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3 :: Only
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: test
+Requires-Dist: requests_mock; extra == "test"
+
+# remotezip2
+
+Fork of https://github.com/gtsystem/python-remotezip. Hopefully more responsive to PRs.

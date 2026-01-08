@@ -1,0 +1,243 @@
+Metadata-Version: 2.1
+Name: python-pcapng
+Version: 2.1.1
+Summary: Library to read/write the pcap-ng format used by various packet sniffers.
+Home-page: https://github.com/rshk/python-pcapng
+Author: Samuele Santi
+Author-email: samuele@samuelesanti.com
+License: Apache-2.0
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Requires-Python: ~=3.5
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+Provides-Extra: dev
+Requires-Dist: flake8 ; extra == 'dev'
+Requires-Dist: isort ; extra == 'dev'
+Requires-Dist: pre-commit ; extra == 'dev'
+Requires-Dist: pytest (>=5.4) ; extra == 'dev'
+Requires-Dist: pytest-cov ; extra == 'dev'
+Requires-Dist: setuptools-scm[toml] ; extra == 'dev'
+Requires-Dist: sphinx ; extra == 'dev'
+Requires-Dist: sphinx-rtd-theme ; extra == 'dev'
+
+Python-pcapng
+#############
+
+Python library to parse the pcap-ng format used by newer versions
+of dumpcap & similar tools (wireshark, winpcap, ...).
+
+
+Documentation
+=============
+
+If you prefer the RTD theme, or want documentation for any version
+other than the latest, head here:
+
+http://python-pcapng.readthedocs.org/en/latest/
+
+If you prefer the more comfortable, page-wide, default sphinx theme,
+a documentation mirror is hosted on GitHub pages:
+
+http://rshk.github.io/python-pcapng/
+
+
+CI build status
+===============
+
++----------+--------------------------------------------------------------------------+
+| Branch   | Status                                                                   |
++==========+==========================================================================+
+| master   | .. image:: https://travis-ci.org/rshk/python-pcapng.svg?branch=master    |
+|          |     :target: https://travis-ci.org/rshk/python-pcapng                    |
++----------+--------------------------------------------------------------------------+
+| develop  | .. image:: https://travis-ci.org/rshk/python-pcapng.svg?branch=develop   |
+|          |     :target: https://travis-ci.org/rshk/python-pcapng                    |
++----------+--------------------------------------------------------------------------+
+
+
+Source code
+===========
+
+Source, issue tracker etc. on GitHub: https://github.com/rshk/python-pcapng
+
+Get the source from git::
+
+    git clone https://github.com/rshk/python-pcapng
+
+Download zip of the latest version:
+
+https://github.com/rshk/python-pcapng/archive/master.zip
+
+Install from pypi::
+
+    pip install python-pcapng
+
+
+PyPI status
+===========
+
+The official page on the Python Package Index is: https://pypi.python.org/pypi/python-pcapng
+
+.. image:: https://img.shields.io/pypi/v/python-pcapng.svg
+    :target: https://pypi.python.org/pypi/python-pcapng
+    :alt: Latest PyPI version
+
+.. image:: https://img.shields.io/pypi/dm/python-pcapng.svg
+    :target: https://github.com/rshk/python-pcapng.git
+    :alt: Number of PyPI downloads
+
+.. image:: https://img.shields.io/pypi/pyversions/python-pcapng.svg
+    :target: https://pypi.python.org/pypi/python-pcapng/
+    :alt: Supported Python versions
+
+.. image:: https://img.shields.io/pypi/status/python-pcapng.svg
+    :target: https://pypi.python.org/pypi/python-pcapng/
+    :alt: Development Status
+
+.. image:: https://img.shields.io/pypi/l/python-pcapng.svg
+    :target: https://pypi.python.org/pypi/python-pcapng/
+    :alt: License
+
+..
+   .. image:: https://pypip.in/wheel/python-pcapng/badge.svg
+       :target: https://pypi.python.org/pypi/python-pcapng/
+       :alt: Wheel Status
+
+   .. image:: https://pypip.in/egg/python-pcapng/badge.svg
+       :target: https://pypi.python.org/pypi/python-pcapng/
+       :alt: Egg Status
+
+   .. image:: https://pypip.in/format/python-pcapng/badge.svg
+       :target: https://pypi.python.org/pypi/python-pcapng/
+       :alt: Download format
+
+
+
+Why this library?
+=================
+
+- I need to decently extract some information from a bunch of pcap-ng
+  files, but apparently tcpdump has some problems reading those files,
+
+  I couldn't find other nice tools nor Python bindings to a library
+  able to parse this format, so..
+
+- In general, it appears there are (quite a bunch of!) Python modules
+  to parse the old (much simpler) format, but nothing for the new one.
+
+- And, they usually completely lack any form of documentation.
+
+
+Isn't it slow?
+==============
+
+Yes, I guess it would be much slower than something written in C,
+but I'm much better at Python than C.
+
+..and I need to get things done, and CPU time is not that expensive :)
+
+(Maybe I'll give a try porting the thing to Cython to speed it up, but
+anyways, pure-Python libraries are always useful, eg. for PyPy).
+
+
+How do I use it?
+================
+
+Basic usage is as simple as:
+
+.. code-block:: python
+
+    from pcapng import FileScanner
+
+    with open('/tmp/mycapture.pcap', 'rb') as fp:
+        scanner = FileScanner(fp)
+        for block in scanner:
+            pass  # do something with the block...
+
+Have a look at the blocks documentation to see what they do; also, the
+``examples`` directory contains some example scripts using the library.
+
+
+Hacking
+=======
+
+Format specification is here:
+
+https://github.com/pcapng/pcapng/
+
+Contributions are welcome, please contact me if you're planning to do
+some big change, so that we can sort out the best way to integrate it.
+
+Or even better, open an issue so the whole world can participate in
+the discussion :)
+
+
+Pcap-ng write support
+=====================
+
+Write support exists as of version 2.0.0. See the file
+``examples/generate_pcapng.py`` for an example of the minimum code
+needed to generate a pcapng file.
+
+In most cases, this library will prevent you from creating broken
+data. If you want to create marginal pcapng files, e.g. as test cases
+for other software, you can do that by adjusting the "strictness" of
+the library, as in:
+
+.. code-block:: python
+
+    from pcapng.strictness import Strictness, set_strictness
+    set_strictness(Strictness.FIX)
+
+Recognized values are ``Strictness.FORBID`` (the default),
+``Strictness.FIX`` (warn about problems, fix *if possible*),
+``Strictness.WARN`` (warn only), and ``Strictness.NONE`` (no warnings).
+Circumstances that will result in strictness warnings include:
+
+    * Adding multiples of a non-repeatable option to a block
+
+    * Adding a SPB to a file with more than one interface
+
+    * Writing a PB (PBs are obsolete and not to be used in new files)
+
+    * Writing EPB/SPB/PB/ISB before writing any IDBs
+
+
+Creating a release
+==================
+
+1. Create a tag for the new version::
+
+     git tag v2.0.0 -m 'Version 2.0.0'
+
+2. Install build dependencies in a virtualenv::
+
+     python -m venv ./.build-venv
+     ./.build-venv/bin/python -m pip install build twine
+
+3. Build source and wheel distributions::
+
+     rm -rf ./dist *.egg-info
+     ./.build-venv/bin/python -m build
+
+4. Use Twine to upload to pypi::
+
+     twine upload dist/*
+
+
+Troubleshooting
+---------------
+
+If you get some crazy version number like
+``2.0.1.dev0+g7bd8575.d20220310`` instead of what you expect (eg
+``2.0.0``), it's because you have uncommitted or untracked files in
+your local working copy, or you created more commits after creating
+the tag. Such a version number will be refused by pypi (and it's not a
+good version number anyways), so make sure you have a clean working
+copy before building.
