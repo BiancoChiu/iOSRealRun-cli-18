@@ -1,8 +1,8 @@
 # iOSRealRun-cli-18
-## 更新计划
-正在写一个 GUI，想要打包好方便直接运行 (dev branch)
+---
+[**@GH4NG**](https://github.com/GH4NG)基于Go开发了一款带有GUI的跑步软件，请大家尝试使用他的[仓库](https://github.com/GH4NG/iOSGhostRun)并测试提issue
 
-<img width="800" alt="image" src="https://github.com/user-attachments/assets/89554033-0357-4873-9a21-a647a3ee581a" />
+本项目大概放弃继续更新了😋
 
 ---
 
