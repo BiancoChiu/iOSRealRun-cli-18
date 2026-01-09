@@ -8,6 +8,9 @@ import math
 import time
 import random
 import asyncio
+from main import loop_cnt
+from util.speed import current_speed
+
 
 from functools import lru_cache
 
@@ -163,15 +166,18 @@ async def run1(dvt, loc: list, v, dt=0.2):
             await asyncio.sleep(dt - elapsed)
         clock = time.time()
 
-async def run(address, port, loc: list, v, d=15):
+async def run(address, port, loc: list,d=15):
+    global loop_cnt
     random.seed(time.time())
     rsd = RemoteServiceDiscoveryService((address, port))
     await asyncio.sleep(2)
     await rsd.connect()
     dvt = DvtSecureSocketProxyService(rsd)
     dvt.perform_handshake()
-
     while True:
+        v = current_speed(loop_cnt)
         vRand = 1000/(1000/v-(2*random.random()-1)*d)
+        print(f"当前速度为{vRand}/{v}")
         await run1(dvt, loc, vRand)
         print("跑完一圈了")
+        loop_cnt += 1

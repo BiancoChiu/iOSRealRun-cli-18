@@ -1,18 +1,14 @@
-import signal
-import logging
-import coloredlogs
-import os
 import asyncio
+import logging
+import os
+import signal
 
+import coloredlogs
 
-from init import init
-from init import tunnel
-from init import route
-
-import run
 import config
-
-
+import run
+from init import init, route, tunnel
+from util import speed
 
 debug = os.environ.get("DEBUG", False)
 
@@ -28,9 +24,10 @@ logging.getLogger('humanfriendly.prompts').setLevel(logging.DEBUG if debug else 
 logging.getLogger('blib2to3.pgen2.driver').setLevel(logging.DEBUG if debug else logging.WARNING)
 logging.getLogger('urllib3.connectionpool').setLevel(logging.DEBUG if debug else logging.WARNING)
 
-
+loop_cnt = 0
 
 async def main():
+    global loop_cnt
     logger = logging.getLogger(__name__)
     coloredlogs.install(level=logging.INFO)
     logger.setLevel(logging.INFO)
@@ -52,10 +49,10 @@ async def main():
         logger.info(f"got route from {config.config.routeConfig}")
 
         try:
-            print(f"已开始模拟跑步，速度大约为 {config.config.v} m/s")
+            print(f"已开始模拟跑步, 目前是第{loop_cnt +1}/{config.config.target_loops}圈")
             print("会无限循环，按 Ctrl+C 退出")
             print("请勿直接关闭窗口，否则无法还原正常定位")
-            await run.run(address, port, loc, config.config.v)
+            await run.run(address, port, loc)
         except KeyboardInterrupt:
             logger.debug("get KeyboardInterrupt (inner)")
             logger.debug(f"Is process alive? {process.is_alive()}")
@@ -70,9 +67,11 @@ async def main():
         logger.debug("terminating tunnel process")
         process.terminate()
         logger.info("tunnel process terminated")
-        print("Bye")
-    
 
     
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\nExiting...")
+    

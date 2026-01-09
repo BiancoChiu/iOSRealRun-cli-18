@@ -1,3 +1,10 @@
+[tool.basedpyright]
+typeCheckingMode = "basic"
+reportUnknownMemberType = "none"
+reportOptionalMemberAccess = "none"
+reportAttributeAccessIssue = "none"
+reportUnreachable = false
+reportArgumentType = false
 [project]
 name = "iosrealrun-cli-18"
 version = "0.1.0"
